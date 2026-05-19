@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: regexlab
+    env: docker
+    region: oregon
+    buildCommand: |
+      # Install PHP dependencies
+      composer install --optimize-autoloader --no-dev
+      # Build frontend assets
+      npm ci && npm run build
+      # Optimize Laravel
+      php artisan optimize
+    startCommand: apache2-foreground
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        sync: false
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_DATABASE
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: ASSET_URL
+        value: ""
+
+databases:
+  - name: regexlab
+    plan: free
+    region: oregon
