@@ -7,19 +7,10 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    libzip-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo bcmath
-
-# Install Node.js 18
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -31,11 +22,8 @@ RUN sed -i 's|AllowOverride None|AllowOverride All|' /etc/apache2/sites-availabl
 
 WORKDIR /var/www/html
 
-# Copy everything (vendor ya está incluido)
+# Copy everything (vendor y build ya incluidos)
 COPY . .
-
-# Build Node assets
-RUN npm install --legacy-peer-deps && npm run build
 
 # Fix permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
