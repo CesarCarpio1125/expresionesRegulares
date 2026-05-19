@@ -13,8 +13,11 @@ RUN apt-get update && apt-get install -y \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions (SQLite is essential)
-RUN docker-php-ext-install pdo pdo_sqlite bcmath
+# Install PHP extensions
+RUN docker-php-ext-install pdo bcmath
+
+# Enable SQLite (usually built-in, but ensure it's available)
+RUN docker-php-ext-enable pdo_sqlite 2>/dev/null || true
 
 # Install Node.js (needed for Vite)
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
