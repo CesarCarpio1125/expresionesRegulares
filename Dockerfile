@@ -1,6 +1,9 @@
 # Use PHP 8.4 with Apache
 FROM php:8.4-apache
 
+# Habilitar extensiones SQLite que vienen incluidas en la imagen base
+RUN docker-php-ext-enable pdo_sqlite
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
@@ -11,11 +14,10 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     wget \
-    libsqlite3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions (solo las necesarias)
-RUN docker-php-ext-install pdo pdo_sqlite sqlite3 bcmath
+# Install PHP extensions - solo las básicas
+RUN docker-php-ext-install pdo bcmath
 
 # Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
