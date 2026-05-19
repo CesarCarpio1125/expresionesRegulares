@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.4-apache
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -45,8 +45,8 @@ RUN composer install \
     --prefer-dist \
     --no-progress \
     --no-interaction \
-    --no-autoloader && \
-    composer dump-autoload --optimize
+    --no-autoloader \
+    && composer dump-autoload --optimize
 
 # Copy startup script
 COPY docker-start.sh /usr/local/bin/docker-start.sh
