@@ -11,10 +11,11 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     wget \
+    libsqlite3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions (solo las necesarias)
-RUN docker-php-ext-install pdo pdo_sqlite bcmath
+RUN docker-php-ext-install pdo pdo_sqlite sqlite3 bcmath
 
 # Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
