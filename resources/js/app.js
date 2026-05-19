@@ -1,14 +1,13 @@
-import { createApp } from 'vue';
+import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import './app.css';
 
 createInertiaApp({
-  resolve: (name) => {
-    const pages = import.meta.glob('./pages/**/*.vue', { eager: true });
-    return pages[`./pages/${name}.vue`];
-  },
-  setup({ el, App, props }) {
-    const app = createApp(App, props);
+  resolve: (name) => resolvePageComponent(`./pages/${name}.vue`, import.meta.glob('./pages/**/*.vue')),
+  setup({ el, App, props, plugin }) {
+    const app = createApp({ render: () => h(App, props) });
+    app.use(plugin);
 
     const theme = localStorage.getItem('theme') ||
       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
@@ -17,6 +16,13 @@ createInertiaApp({
       document.documentElement.classList.add('dark');
     }
 
-    app.mount(el);
+    const mountEl = el || document.getElementById('app') || (() => {
+      const d = document.createElement('div');
+      d.id = 'app';
+      document.body.appendChild(d);
+      return d;
+    })();
+
+    app.mount(mountEl);
   },
 });
