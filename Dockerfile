@@ -1,4 +1,3 @@
-# Usar imagen base con PHP 8.2 y Apache
 FROM php:8.2-apache
 
 # Instalar extensiones necesarias
@@ -19,18 +18,19 @@ COPY . .
 # Instalar composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Instalar dependencias
-RUN composer install --no-dev --optimize-autoloader
+# Instalar dependencias con retry
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-interaction || \
+    composer update --no-dev --optimize-autoloader --ignore-platform-reqs --no-interaction
 
 # Build assets
-RUN npm ci && npm run build
+RUN npm ci --legacy-peer-deps && npm run build
 
 # Permisos
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Optimizar Laravel
-RUN php artisan optimize
+RUN php artisan config:cache && php artisan route:cache && php artisan view:cache
 
 EXPOSE 80
 
