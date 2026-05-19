@@ -1,14 +1,10 @@
 #!/bin/bash
-# Install PHP dependencies (this will be handled by Render's PHP buildpack)
-# The vendor folder should be included in the repo or built separately
+# Build command for Render
+# Install PHP dependencies with composer
+composer install --no-dev --optimize-autoloader
 
-# Build frontend assets if node_modules doesn't exist
-if [ ! -d "node_modules" ]; then
-    npm install --include=dev
-fi
+# Install and build Node assets
+npm install --include=dev && npm run build
 
-# Build Vue assets
-npm run build
-
-# Generate Laravel key if not set
+# Generate Laravel key if needed
 php artisan key:generate --force
