@@ -7,8 +7,6 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    zip \
-    unzip \
     libzip-dev \
     && rm -rf /var/lib/apt/lists/*
 
@@ -33,13 +31,7 @@ RUN sed -i 's|AllowOverride None|AllowOverride All|' /etc/apache2/sites-availabl
 
 WORKDIR /var/www/html
 
-# Copy only composer files first for dependency installation
-COPY composer.json composer.lock ./
-
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
-
-# Copy the rest of the application
+# Copy everything (vendor ya está incluido)
 COPY . .
 
 # Build Node assets
