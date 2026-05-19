@@ -10,3 +10,7 @@ storage/framework/views/*
 docker-compose.yml
 Dockerfile
 README.md
+database/.gitignore
+database/factories
+database/migrations
+database/seeders
