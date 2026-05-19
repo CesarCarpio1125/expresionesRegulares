@@ -13,8 +13,8 @@ RUN apt-get update && apt-get install -y \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_pgsql bcmath
+# Install PHP extensions (solo las necesarias)
+RUN docker-php-ext-install pdo pdo_sqlite bcmath
 
 # Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
