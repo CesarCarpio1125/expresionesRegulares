@@ -13,10 +13,10 @@ RUN apt-get update && apt-get install -y \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions (SQLite only - no PostgreSQL needed)
-RUN docker-php-ext-install pdo bcmath
+# Install PHP extensions (SQLite is essential)
+RUN docker-php-ext-install pdo pdo_sqlite bcmath
 
-# Install Node.js
+# Install Node.js (needed for Vite)
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
@@ -24,20 +24,22 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # Configure Apache
 RUN a2enmod rewrite
 
-# Configure Apache to allow .htaccess overrides
+# Allow .htaccess overrides
 RUN sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy application files (vendor already included)
+# Copy all files including vendor, node_modules, and build
 COPY . /var/www/html
 
-# Frontend already built (public/build in repo)
+# Fix permissions - comprehensive
+RUN find /var/www/html -type f -exec chmod 644 {} \; \
+    && find /var/www/html -type d -exec chmod 755 {} \;
 
-# Set permissions
-RUN chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html
+# Ensure storage and bootstrap/cache are writable
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html
 
 # Expose port 80
 EXPOSE 80
