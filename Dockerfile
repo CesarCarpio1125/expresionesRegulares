@@ -13,8 +13,8 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_pgsql pgsql bcmath
+# Install PHP extensions (SQLite only - no PostgreSQL needed)
+RUN docker-php-ext-install pdo bcmath
 
 # Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
