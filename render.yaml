@@ -1,11 +1,14 @@
 services:
   - type: web
     name: regexlab
-    env: docker
     region: oregon
-    buildCommand: |
-      composer install --optimize-autoloader --no-dev
-      npm ci && npm run build
+    env: docker
+    dockerfilePath: Dockerfile
+    dockerBuildContext: .
+    buildCommand: >
+      composer install --no-dev --prefer-dist --no-interaction &&
+      npm ci --legacy-peer-deps &&
+      npm run build &&
       php artisan optimize
     startCommand: apache2-foreground
     envVars:
@@ -15,3 +18,11 @@ services:
         value: "false"
       - key: APP_KEY
         sync: false
+      - key: DB_CONNECTION
+        value: "null"
+      - key: DB_DATABASE
+        value: "null"
+      - key: APP_URL
+        value: "https://regexlab.onrender.com"
+    autoDeploy: true
+    pullRequestPreviewsEnabled: false
