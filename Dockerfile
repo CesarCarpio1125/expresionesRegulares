@@ -26,38 +26,34 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Configure Apache
+# Configure Apache for Laravel
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 RUN sed -i 's|<Directory /var/www/html>|<Directory /var/www/html/public>|' /etc/apache2/sites-available/000-default.conf
 RUN sed -i 's|AllowOverride None|AllowOverride All|' /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/html
 
-# Copy project files
+# Copy only composer files first for dependency installation
+COPY composer.json composer.lock ./
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+# Copy the rest of the application
 COPY . .
 
-# Create database directory
-RUN mkdir -p /var/www/html/database
-
-# Install PHP dependencies - single command with error handling
-RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs 2>/dev/null || \
-    composer update --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs 2>/dev/null || \
-    echo "Composer failed - continuing anyway"
-
 # Build Node assets
-RUN npm ci --legacy-peer-deps --silent 2>/dev/null || npm install --legacy-peer-deps --silent 2>/dev/null || echo "NPM skipped"
-
-RUN npm run build 2>/dev/null || echo "Build skipped"
+RUN npm ci --legacy-peer-deps && npm run build
 
 # Fix permissions
-RUN chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Generate Laravel key if needed
-RUN php artisan key:generate --force 2>/dev/null || echo "Key gen skipped"
+# Generate Laravel key
+RUN php artisan key:generate --force
 
 # Cache config
-RUN php artisan config:cache 2>/dev/null || echo "Cache skipped"
+RUN php artisan config:cache
 
 EXPOSE 80
 
