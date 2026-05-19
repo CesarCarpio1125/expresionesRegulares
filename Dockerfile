@@ -13,8 +13,8 @@ RUN apt-get update && apt-get install -y \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions - solo las básicas
-RUN docker-php-ext-install pdo bcmath
+# Install PHP extensions - Laravel requiere mbstring, xml, json
+RUN docker-php-ext-install pdo mbstring bcmath json xml
 
 # Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
@@ -41,8 +41,8 @@ WORKDIR /var/www/html
 # Copy composer files first for better caching
 COPY composer.json composer.lock ./
 
-# Install dependencies
-RUN composer install --optimize-autoloader --no-dev
+# Install dependencies - with timeout and retry options
+RUN COMPOSER_PROCESS_TIMEOUT=600 composer install --optimize-autoloader --no-dev --no-interaction --prefer-dist
 
 # Copy rest of application
 COPY . /var/www/html
