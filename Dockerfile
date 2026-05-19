@@ -24,6 +24,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # Configure Apache
 RUN a2enmod rewrite
 
+# Configure Apache to allow .htaccess overrides
+RUN sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+
 # Set working directory
 WORKDIR /var/www/html
 
