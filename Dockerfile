@@ -21,20 +21,14 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
 # Configure Apache
 RUN a2enmod rewrite
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy application files
+# Copy application files (vendor already included)
 COPY . /var/www/html
-
-# Install PHP dependencies with Composer
-RUN composer install --no-dev --optimize-autoloader
 
 # Install npm dependencies and build
 RUN npm install --include=dev && npm run build
