@@ -7,7 +7,6 @@ services:
       composer install --optimize-autoloader --no-dev
       npm ci && npm run build
       php artisan optimize
-      touch /var/www/html/database/database.sqlite
     startCommand: apache2-foreground
     envVars:
       - key: APP_ENV
@@ -16,7 +15,3 @@ services:
         value: "false"
       - key: APP_KEY
         sync: false
-      - key: DB_CONNECTION
-        value: sqlite
-      - key: DB_DATABASE
-        value: /var/www/html/database/database.sqlite

@@ -1,9 +1,6 @@
 # Use PHP 8.4 with Apache
 FROM php:8.4-apache
 
-# Habilitar extensiones SQLite que vienen incluidas en la imagen base
-RUN docker-php-ext-enable pdo_sqlite
-
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
