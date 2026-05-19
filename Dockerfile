@@ -35,7 +35,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Build Node assets
-RUN npm ci --legacy-peer-deps && npm run build
+RUN npm install --legacy-peer-deps && npm run build
 
 # Fix permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache

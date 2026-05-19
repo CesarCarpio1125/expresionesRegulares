@@ -9,9 +9,7 @@ docker-compose.yml
 Dockerfile
 docker/
 *.log
-node_modules/
 vendor/
-package-lock.json
 yarn.lock
 npm-debug.log
 .DS_Store
