@@ -30,8 +30,7 @@ WORKDIR /var/www/html
 # Copy application files (vendor already included)
 COPY . /var/www/html
 
-# Install npm dependencies and build
-RUN npm install --include=dev && npm run build
+# Frontend already built (public/build in repo)
 
 # Set permissions
 RUN chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
