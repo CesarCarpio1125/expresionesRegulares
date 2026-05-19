@@ -1,10 +1,4 @@
 #!/bin/bash
-# Build command for Render
-# Install PHP dependencies with composer
-composer install --no-dev --optimize-autoloader
-
-# Install and build Node assets
+# Build frontend assets only - PHP/Composer will be handled by Render's PHP runtime
 npm install --include=dev && npm run build
-
-# Generate Laravel key if needed
 php artisan key:generate --force
