@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    postgresql-client \
+    wget \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions (SQLite only - no PostgreSQL needed)
@@ -20,6 +20,9 @@ RUN docker-php-ext-install pdo bcmath
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Configure Apache
 RUN a2enmod rewrite
