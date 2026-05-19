@@ -12,6 +12,9 @@ RUN apt-get update && apt-get install -y \
 # Install PHP extensions
 RUN docker-php-ext-install pdo bcmath
 
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
@@ -22,8 +25,11 @@ RUN sed -i 's|AllowOverride None|AllowOverride All|' /etc/apache2/sites-availabl
 
 WORKDIR /var/www/html
 
-# Copy everything (vendor y build ya incluidos)
+# Copy everything
 COPY . .
+
+# Install PHP dependencies with Composer
+RUN composer install --no-dev --prefer-dist --no-progress --no-interaction
 
 # Fix permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
