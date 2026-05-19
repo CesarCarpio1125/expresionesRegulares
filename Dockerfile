@@ -1,74 +1,37 @@
-# Use PHP 8.2 with Apache (Laravel 10 compatible)
+# Usar imagen base con PHP 8.2 y Apache
 FROM php:8.2-apache
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    wget \
-    libzip-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install PHP extensions - solo las necesarias (mbstring, json, xml ya vienen en la imagen)
+# Instalar extensiones necesarias
 RUN docker-php-ext-install pdo bcmath
 
-# Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Configure Apache - enable rewrite
+# Habilitar mod_rewrite
 RUN a2enmod rewrite
 
-# Configure Apache to use public folder as DocumentRoot
+# Configurar Apache para Laravel
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 RUN sed -i 's|<Directory /var/www/html>|<Directory /var/www/html/public>|' /etc/apache2/sites-available/000-default.conf
 RUN sed -i 's|AllowOverride None|AllowOverride All|' /etc/apache2/sites-available/000-default.conf
 
-# Allow .htaccess in Apache config
-RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
-
-# Set working directory
 WORKDIR /var/www/html
 
-# Copy composer files first for better caching
-COPY composer.json composer.lock ./
+COPY . .
 
-# Install dependencies - optimizar para Docker
-RUN composer config --global process-timeout 600 && \
-    composer config --global cache-dir /tmp/composer && \
-    composer install --optimize-autoloader --no-dev --no-interaction --prefer-dist --ignore-platform-reqs || \
-    composer update --optimize-autoloader --no-dev --no-interaction --prefer-dist --ignore-platform-reqs
+# Instalar composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copy rest of application
-COPY . /var/www/html
+# Instalar dependencias
+RUN composer install --no-dev --optimize-autoloader
 
-# Build Vite assets for production
+# Build assets
 RUN npm ci && npm run build
 
-# Fix ownership
-RUN chown -R www-data:www-data /var/www/html
-
-# Set permissions
-RUN find /var/www/html -type d -exec chmod 755 {} \; \
-    && find /var/www/html -type f -exec chmod 644 {} \;
-
-# Ensure storage and bootstrap/cache are writable
+# Permisos
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Generate optimized class map
+# Optimizar Laravel
 RUN php artisan optimize
 
-# Expose port 80
 EXPOSE 80
 
-# Start Apache
 CMD ["apache2-foreground"]
