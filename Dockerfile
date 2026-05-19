@@ -13,8 +13,8 @@ RUN apt-get update && apt-get install -y \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions - Laravel requiere mbstring, xml, json
-RUN docker-php-ext-install pdo mbstring bcmath json xml
+# Install PHP extensions - solo las necesarias (mbstring, json, xml ya vienen en la imagen)
+RUN docker-php-ext-install pdo bcmath
 
 # Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
