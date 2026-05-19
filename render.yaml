@@ -4,12 +4,10 @@ services:
     env: docker
     region: oregon
     buildCommand: |
-      # Install PHP dependencies
       composer install --optimize-autoloader --no-dev
-      # Build frontend assets
       npm ci && npm run build
-      # Optimize Laravel
       php artisan optimize
+      touch /var/www/html/database/database.sqlite
     startCommand: apache2-foreground
     envVars:
       - key: APP_ENV
@@ -19,21 +17,6 @@ services:
       - key: APP_KEY
         sync: false
       - key: DB_CONNECTION
-        value: pgsql
-      - key: DB_HOST
-        sync: false
-      - key: DB_PORT
-        value: "5432"
+        value: sqlite
       - key: DB_DATABASE
-        sync: false
-      - key: DB_USERNAME
-        sync: false
-      - key: DB_PASSWORD
-        sync: false
-      - key: ASSET_URL
-        value: ""
-
-databases:
-  - name: regexlab
-    plan: free
-    region: oregon
+        value: /var/www/html/database/database.sqlite
