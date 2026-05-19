@@ -16,10 +16,7 @@ RUN apt-get update && apt-get install -y \
 # Install PHP extensions
 RUN docker-php-ext-install pdo bcmath
 
-# Enable SQLite (usually built-in, but ensure it's available)
-RUN docker-php-ext-enable pdo_sqlite 2>/dev/null || true
-
-# Install Node.js (needed for Vite)
+# Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
@@ -27,22 +24,24 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # Configure Apache
 RUN a2enmod rewrite
 
-# Allow .htaccess overrides
-RUN sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+# Allow .htaccess and add Require all granted
+RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy all files including vendor, node_modules, and build
+# Copy all files
 COPY . /var/www/html
 
-# Fix permissions - comprehensive
-RUN find /var/www/html -type f -exec chmod 644 {} \; \
-    && find /var/www/html -type d -exec chmod 755 {} \;
+# Fix ownership first, then permissions
+RUN chown -R www-data:www-data /var/www/html
+
+# Set directory permissions (755) and file permissions (644)
+RUN find /var/www/html -type d -exec chmod 755 {} \; \
+    && find /var/www/html -type f -exec chmod 644 {} \;
 
 # Ensure storage and bootstrap/cache are writable
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chown -R www-data:www-data /var/www/html
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose port 80
 EXPOSE 80
