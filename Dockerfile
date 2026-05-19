@@ -1,3 +1,14 @@
+FROM node:20-bullseye AS node-builder
+
+WORKDIR /app
+
+COPY package.json package-lock.json vite.config.js postcss.config.js tailwind.config.js ./
+COPY resources ./resources
+COPY public ./public
+
+RUN npm ci --legacy-peer-deps
+RUN npm run build
+
 FROM php:8.4-apache
 
 # Install system dependencies
@@ -17,11 +28,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_sqlite bcmath
-
-# Install Node and npm for frontend assets
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs && \
-    rm -rf /var/lib/apt/lists/*
 
 # Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
@@ -52,11 +58,11 @@ RUN composer install \
 COPY docker-start.sh /usr/local/bin/docker-start.sh
 RUN chmod +x /usr/local/bin/docker-start.sh
 
-# Copy everything else
+# Copy application code
 COPY . .
 
-# Install frontend assets
-RUN npm ci --legacy-peer-deps && npm run build
+# Copy frontend build artifacts from node stage
+COPY --from=node-builder /app/public/build ./public/build
 
 # Fix permissions
 RUN chown -R www-data:www-data /var/www/html && \

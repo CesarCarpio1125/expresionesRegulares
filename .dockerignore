@@ -27,4 +27,4 @@ Procfile
 phpunit.xml
 .postcssrc.js
 .tailwind.config.js
-vite.config.js
+node_modules/
