@@ -21,10 +21,15 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# Configure Apache
+# Configure Apache - enable rewrite
 RUN a2enmod rewrite
 
-# Allow .htaccess and add Require all granted
+# Configure Apache to use public folder as DocumentRoot
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
+RUN sed -i 's|<Directory /var/www/html>|<Directory /var/www/html/public>|' /etc/apache2/sites-available/000-default.conf
+RUN sed -i 's|AllowOverride None|AllowOverride All|' /etc/apache2/sites-available/000-default.conf
+
+# Allow .htaccess in Apache config
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
 # Set working directory
@@ -33,10 +38,10 @@ WORKDIR /var/www/html
 # Copy all files
 COPY . /var/www/html
 
-# Fix ownership first, then permissions
+# Fix ownership
 RUN chown -R www-data:www-data /var/www/html
 
-# Set directory permissions (755) and file permissions (644)
+# Set permissions
 RUN find /var/www/html -type d -exec chmod 755 {} \; \
     && find /var/www/html -type f -exec chmod 644 {} \;
 
