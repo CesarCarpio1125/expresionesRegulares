@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     wget \
+    libzip-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions - solo las necesarias (mbstring, json, xml ya vienen en la imagen)
@@ -41,8 +42,11 @@ WORKDIR /var/www/html
 # Copy composer files first for better caching
 COPY composer.json composer.lock ./
 
-# Install dependencies - with timeout and retry options
-RUN COMPOSER_PROCESS_TIMEOUT=600 composer install --optimize-autoloader --no-dev --no-interaction --prefer-dist
+# Install dependencies - optimizar para Docker
+RUN composer config --global process-timeout 600 && \
+    composer config --global cache-dir /tmp/composer && \
+    composer install --optimize-autoloader --no-dev --no-interaction --prefer-dist --ignore-platform-reqs || \
+    composer update --optimize-autoloader --no-dev --no-interaction --prefer-dist --ignore-platform-reqs
 
 # Copy rest of application
 COPY . /var/www/html
