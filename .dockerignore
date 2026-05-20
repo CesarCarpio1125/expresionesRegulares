@@ -9,7 +9,6 @@ docker-compose.yml
 Dockerfile
 docker/
 *.log
-vendor/
 yarn.lock
 npm-debug.log
 .DS_Store
@@ -27,4 +26,6 @@ Procfile
 phpunit.xml
 .postcssrc.js
 .tailwind.config.js
+vite.config.js
 node_modules/
+public/build/
