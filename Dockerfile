@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.4-apache
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -22,7 +22,7 @@ RUN sed -i 's|AllowOverride None|AllowOverride All|' /etc/apache2/sites-availabl
 
 WORKDIR /var/www/html
 
-# Copy everything (vendor, build, .env ya incluidos)
+# Copy everything
 COPY . .
 
 # Fix permissions
