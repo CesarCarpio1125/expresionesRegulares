@@ -3,7 +3,6 @@
 namespace Inertia\Commands;
 
 use Illuminate\Console\Command;
-use Inertia\Ssr\HttpGateway;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(name: 'inertia:stop-ssr')]
@@ -24,11 +23,11 @@ class StopSsr extends Command
     protected $description = 'Stop the Inertia SSR server';
 
     /**
-     * Stop the Inertia SSR server.
+     * Stop the SSR server.
      */
-    public function handle(HttpGateway $gateway): int
+    public function handle(): int
     {
-        $url = $gateway->getUrl('/shutdown');
+        $url = str_replace('/render', '', config('inertia.ssr.url', 'http://127.0.0.1:13714')).'/shutdown';
 
         $ch = curl_init($url);
         curl_exec($ch);
