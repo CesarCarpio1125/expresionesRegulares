@@ -26,4 +26,3 @@ phpunit.xml
 .tailwind.config.js
 vite.config.js
 node_modules/
-public/build/
