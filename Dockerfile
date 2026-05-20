@@ -22,18 +22,12 @@ RUN sed -i 's|AllowOverride None|AllowOverride All|' /etc/apache2/sites-availabl
 
 WORKDIR /var/www/html
 
-# Copy everything
+# Copy everything (vendor, build, .env ya incluidos)
 COPY . .
 
 # Fix permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Generate Laravel key
-RUN php artisan key:generate --force
-
-# Cache config
-RUN php artisan config:cache
 
 EXPOSE 80
 
