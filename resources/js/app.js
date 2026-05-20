@@ -4,8 +4,13 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import './app.css';
 
 createInertiaApp({
-  resolve: (name) => resolvePageComponent(`./pages/${name}.vue`, import.meta.glob('./pages/**/*.vue')),
+  resolve: (name) => {
+    console.log('Resolving component:', name);
+    return resolvePageComponent(`./pages/${name}.vue`, import.meta.glob('./pages/**/*.vue'));
+  },
   setup({ el, App, props, plugin }) {
+    console.log('Inertia setup:', { el, props });
+    
     const app = createApp({ render: () => h(App, props) });
     app.use(plugin);
 
@@ -23,6 +28,10 @@ createInertiaApp({
       return d;
     })();
 
+    console.log('Mounting to:', mountEl);
     app.mount(mountEl);
+  },
+  onError: (error) => {
+    console.error('Inertia Error:', error);
   },
 });

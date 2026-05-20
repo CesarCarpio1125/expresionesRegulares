@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Home');
+    return Inertia::render('Home', [
+        'test' => 'Hello from Laravel'
+    ]);
 });
 
 Route::get('/playground', function () {
@@ -21,4 +23,11 @@ Route::get('/quiz', function () {
 
 Route::get('/learn', function () {
     return Inertia::render('Learn');
+});
+
+Route::get('/test', function () {
+    return response()->json([
+        'status' => 'ok',
+        'message' => 'API working'
+    ]);
 });

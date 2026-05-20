@@ -1,28 +1,28 @@
 {
-  "_AppLayout-B3b08b6k.js": {
-    "file": "assets/AppLayout-B3b08b6k.js",
+  "_AppLayout-DwTuIt5n.js": {
+    "file": "assets/AppLayout-DwTuIt5n.js",
     "name": "AppLayout",
     "imports": [
       "resources/js/app.js",
-      "_BaseCard-DDkEv3rR.js"
+      "_BaseCard-DSX5soTG.js"
     ]
   },
-  "_BaseCard-DDkEv3rR.js": {
-    "file": "assets/BaseCard-DDkEv3rR.js",
+  "_BaseCard-DSX5soTG.js": {
+    "file": "assets/BaseCard-DSX5soTG.js",
     "name": "BaseCard",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_useRegex-C7pVRm-K.js": {
-    "file": "assets/useRegex-C7pVRm-K.js",
+  "_useRegex-D9zIdCGf.js": {
+    "file": "assets/useRegex-D9zIdCGf.js",
     "name": "useRegex",
     "imports": [
       "resources/js/app.js"
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-CSDb6njp.js",
+    "file": "assets/app-s2g638FH.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -38,59 +38,59 @@
     ]
   },
   "resources/js/pages/Examples.vue": {
-    "file": "assets/Examples-DPfQGXUm.js",
+    "file": "assets/Examples-CedRcKdV.js",
     "name": "Examples",
     "src": "resources/js/pages/Examples.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_BaseCard-DDkEv3rR.js",
-      "_AppLayout-B3b08b6k.js"
+      "_BaseCard-DSX5soTG.js",
+      "_AppLayout-DwTuIt5n.js"
     ]
   },
   "resources/js/pages/Home.vue": {
-    "file": "assets/Home-BeCoHrHd.js",
+    "file": "assets/Home-BXpUjwE3.js",
     "name": "Home",
     "src": "resources/js/pages/Home.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_BaseCard-DDkEv3rR.js",
-      "_useRegex-C7pVRm-K.js",
-      "_AppLayout-B3b08b6k.js"
+      "_BaseCard-DSX5soTG.js",
+      "_useRegex-D9zIdCGf.js",
+      "_AppLayout-DwTuIt5n.js"
     ]
   },
   "resources/js/pages/Learn.vue": {
-    "file": "assets/Learn-BA36enVe.js",
+    "file": "assets/Learn-A5NUNQyZ.js",
     "name": "Learn",
     "src": "resources/js/pages/Learn.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_BaseCard-DDkEv3rR.js"
+      "_BaseCard-DSX5soTG.js"
     ]
   },
   "resources/js/pages/Playground.vue": {
-    "file": "assets/Playground-B_89qnJc.js",
+    "file": "assets/Playground-LAh3crWx.js",
     "name": "Playground",
     "src": "resources/js/pages/Playground.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_BaseCard-DDkEv3rR.js",
-      "_useRegex-C7pVRm-K.js",
-      "_AppLayout-B3b08b6k.js"
+      "_BaseCard-DSX5soTG.js",
+      "_useRegex-D9zIdCGf.js",
+      "_AppLayout-DwTuIt5n.js"
     ]
   },
   "resources/js/pages/Quiz.vue": {
-    "file": "assets/Quiz-BiTOltVL.js",
+    "file": "assets/Quiz-DlusKmL7.js",
     "name": "Quiz",
     "src": "resources/js/pages/Quiz.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_BaseCard-DDkEv3rR.js",
-      "_AppLayout-B3b08b6k.js"
+      "_BaseCard-DSX5soTG.js",
+      "_AppLayout-DwTuIt5n.js"
     ],
     "css": [
       "assets/Quiz-B29e3bdf.css"
